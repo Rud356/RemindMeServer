@@ -65,3 +65,14 @@ async def handle_registration(request: web.Request, session: AsyncSession) -> we
                 }
             )
         )
+
+    else:
+        return web.Response(
+            status=409,
+            body=orjson.dumps(
+                {
+                    "reason": "User is already registered in database with such login",
+                    "registered": successful_registration
+                }
+            )
+        )
