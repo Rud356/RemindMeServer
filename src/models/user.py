@@ -13,6 +13,10 @@ from .exceptions import InvalidCredentials
 
 
 class User(OrmBase):
+    """
+    Class that represents user in database used by ORM.
+    """
+
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -29,7 +33,7 @@ class User(OrmBase):
 
         :param username: users name.
         :param password: users password.
-        :param session:
+        :param session: SQLAlchemy session.
         :return: boolean value representing if use has been saved to database
         """
         salt = secrets.token_urlsafe(64)
@@ -49,6 +53,17 @@ class User(OrmBase):
 
     @classmethod
     async def get_user_by_login_and_password(cls, username: str, password: str, session: AsyncSession) -> "User":
+        """
+        Fetches user object via provided login and plain password, checks if passwords match,
+        and gives back object of user.
+
+        :param username: users login.
+        :param password: users plain password.
+        :param session: SQLAlchemy session.
+        :return: object of class User when password matched one saved in db.
+        :raise InvalidCredentials: when password in db and provided by user are mismatching.
+        :raise ValueError: if user is not registered.
+        """
         query = select(User).where(User.username == username)
         try:
             result: User = (await session.execute(query)).scalars().first()
@@ -69,6 +84,14 @@ class User(OrmBase):
 
     @classmethod
     async def get_user_by_access_token(cls, access_token: str, session: AsyncSession) -> "User":
+        """
+        Gets User object from db by access token.
+
+        :param access_token: users access token.
+        :param session: SQlAlchemy session.
+        :return: object of User class when access_token is in db.
+        :raise InvalidCredentials: if there is no such access token in db.
+        """
         try:
             query = select(User).where(User.access_token == access_token)
             result: User = (await session.execute(query)).scalars().first()
@@ -80,6 +103,12 @@ class User(OrmBase):
 
     @staticmethod
     async def get_unique_access_token(session: AsyncSession) -> str:
+        """
+        Generates unique access token for usage later.
+
+        :param session: SQLAlchemy session.
+        :return: not registered token.
+        """
         access_token: str = secrets.token_urlsafe(128)
 
         token_exists_check = select(
