@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.controllers.user_registration import register_user
 from .inject_session import inject_session
 
-
+# post /users/register
 @inject_session
 async def handle_registration(request: web.Request, session: AsyncSession) -> web.Response:
     """
