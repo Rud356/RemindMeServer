@@ -1,9 +1,14 @@
+import re
+
 import orjson
 from aiohttp import web
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.controllers.user_registration import register_user
 from .inject_session import inject_session
+
+USERNAME_REGEX = re.compile(r"^[A-z0-9_]{8,}")
+USER_PASSWORD_REGEX = re.compile(r"^[A-z0-9_+\-=]{8,}")
 
 # post /users/register
 @inject_session
@@ -19,7 +24,7 @@ async def handle_registration(request: web.Request, session: AsyncSession) -> we
         request_body: dict = await request.json(loads=orjson.loads)
         username: str = request_body["username"].strip()
 
-        if not username.isascii() or len(username) < 3:
+        if USERNAME_REGEX.fullmatch(username) is None:
             return web.Response(
                 status=400,
                 body=orjson.dumps(
@@ -32,7 +37,7 @@ async def handle_registration(request: web.Request, session: AsyncSession) -> we
 
         password: str = request_body["password"].strip()
 
-        if not password.isascii() or len(password) < 8:
+        if USER_PASSWORD_REGEX.fullmatch(password) is None:
             return web.Response(
                 status=400,
                 body=orjson.dumps(
