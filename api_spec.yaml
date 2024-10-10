@@ -83,11 +83,9 @@ paths:
                 username:
                   description: User login
                   type: string
-                  pattern: "^[A-z0-9_]{8,}"
                 password:
                   description: Users password associated with provided login
                   type: string
-                  pattern: "^[A-z0-9_+\-=]{8,}"
 
       responses:
         '200':
