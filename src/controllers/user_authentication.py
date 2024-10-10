@@ -3,7 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.models.user import User
 
 
-async def authenticate_user(username: str, password: str, session: AsyncSession) -> str:
+async def authenticate_user(
+    username: str,
+    password: str,
+    session: AsyncSession
+) -> str:
     """
     Authenticates user by checking if provided username is associated with provided password
     and returns access token as response.
