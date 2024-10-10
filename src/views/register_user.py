@@ -52,7 +52,7 @@ async def handle_registration(request: web.Request, session: AsyncSession) -> we
             username, password, session
         )
 
-    except (orjson.JSONDecodeError, AttributeError):
+    except (orjson.JSONDecodeError, KeyError, AttributeError):
         return web.Response(
             status=400,
             body=orjson.dumps(
