@@ -2,12 +2,14 @@ from functools import wraps
 from typing import Callable, Awaitable
 
 from aiohttp import web
+from aiohttp.web_request import Request
+from aiohttp.web_response import Response
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 
 def inject_session(
     handler: Callable[[web.Request, AsyncSession], Awaitable[web.Response]]
-):
+) -> Callable[[Request], Awaitable[Response]]:
     """
     Decorator that injects AsyncSession into aiohttp handler.
 
