@@ -153,10 +153,12 @@ paths:
 
                     title:
                       type: string
+                      maxLength: 65
                       description: Even title
 
                     description:
                       type: string
+                      maxLength: 240
                       description: Event description
 
                     color_code:
@@ -206,10 +208,12 @@ paths:
               properties:
                 title:
                   type: string
+                  maxLength: 65
                   description: Even title
 
                 description:
                   type: string
+                  maxLength: 240
                   description: Event description
 
                 color_code:
@@ -261,6 +265,17 @@ paths:
                   event_id:
                     type: integer
                     description: ID of new event
+
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Human-readable explanation of invalid request body
 
         '401':
           description: User is not logged into account
@@ -420,10 +435,12 @@ paths:
               properties:
                 title:
                   type: string
+                  maxLength: 65
                   description: Even title
 
                 description:
                   type: string
+                  maxLength: 240
                   description: Event description
 
                 color_code:
@@ -456,6 +473,17 @@ paths:
                 items:
                   type: string
                   description: Names of updates fields on specified event
+
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Human-readable explanation of invalid request body
 
         '401':
           description: User is not logged into account
