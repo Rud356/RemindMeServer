@@ -9,7 +9,8 @@ async def authenticate_user(
     session: AsyncSession
 ) -> str:
     """
-    Authenticates user by checking if provided username is associated with provided password
+    Authenticates user by checking if provided username
+    is associated with provided password
     and returns access token as response.
 
     :param username: users login.
@@ -21,5 +22,7 @@ async def authenticate_user(
     :raises InvalidCredentials: when user did not provide correct password.
     """
 
-    user = await User.get_user_by_login_and_password(username, password, session)
+    user = await User.get_user_by_login_and_password(
+        username, password, session
+    )
     return user.access_token

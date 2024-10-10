@@ -10,9 +10,12 @@ from .inject_session import inject_session
 USERNAME_REGEX = re.compile(r"^[A-z0-9_]{8,}")
 USER_PASSWORD_REGEX = re.compile(r"^[A-z0-9_+\-=]{8,}")
 
+
 # post /users/register
 @inject_session
-async def handle_registration(request: web.Request, session: AsyncSession) -> web.Response:
+async def handle_registration(
+    request: web.Request, session: AsyncSession
+) -> web.Response:
     """
     Registers user in system.
 
@@ -30,7 +33,8 @@ async def handle_registration(request: web.Request, session: AsyncSession) -> we
                 body=orjson.dumps(
                     {
                         "reason":
-                            "Incorrect incoming body, expected ascii sequence of 3 symbols for username"
+                            "Incorrect incoming body, expected ascii "
+                            "sequence of 8 symbols for username"
                     }
                 )
             )
@@ -43,7 +47,8 @@ async def handle_registration(request: web.Request, session: AsyncSession) -> we
                 body=orjson.dumps(
                     {
                         "reason":
-                            "Incorrect incoming body, expected at least 8 ascii characters as password"
+                            "Incorrect incoming body, expected at least "
+                            "8 ascii characters as password"
                     }
                 )
             )
@@ -76,7 +81,8 @@ async def handle_registration(request: web.Request, session: AsyncSession) -> we
             status=409,
             body=orjson.dumps(
                 {
-                    "reason": "User is already registered in database with such login",
+                    "reason": "User is already registered in database "
+                              "with such login",
                     "registered": successful_registration
                 }
             )

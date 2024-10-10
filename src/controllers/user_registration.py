@@ -3,7 +3,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.models.user import User
 
 
-async def register_user(username: str, password: str, session: AsyncSession) -> bool:
+async def register_user(
+    username: str, password: str, session: AsyncSession
+) -> bool:
     """
     Registers new user in database.
 

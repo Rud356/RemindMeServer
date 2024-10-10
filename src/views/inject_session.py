@@ -18,7 +18,9 @@ def inject_session(
     """
     @wraps(handler)
     async def handle_session(request: web.Request):
-        session_maker: async_sessionmaker[AsyncSession] = request.app["session_maker"]
+        session_maker: async_sessionmaker[
+            AsyncSession
+        ] = request.app["session_maker"]
         async with session_maker() as session:
             async with session.begin():
                 resp = await handler(request, session)

@@ -15,7 +15,9 @@ def create_engine(connection_url: str) -> AsyncEngine:
     return create_async_engine(connection_url)
 
 
-def create_session_factory(engine: AsyncEngine) -> async_sessionmaker[AsyncSession]:
+def create_session_factory(
+    engine: AsyncEngine
+) -> async_sessionmaker[AsyncSession]:
     """
     Creates session factory from session.
 
@@ -25,7 +27,9 @@ def create_session_factory(engine: AsyncEngine) -> async_sessionmaker[AsyncSessi
     return async_sessionmaker(engine)
 
 
-def initialize_session_maker(connection_url: str) -> async_sessionmaker[AsyncSession]:
+def initialize_session_maker(
+    connection_url: str
+) -> async_sessionmaker[AsyncSession]:
     """
     Combines engine creation and session factory creation.
 

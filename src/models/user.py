@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import datetime
 import secrets
 from hashlib import pbkdf2_hmac
@@ -19,14 +21,19 @@ class User(OrmBase):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    created_at: Mapped[datetime.datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    created_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )
     username: Mapped[str] = mapped_column(unique=True, index=True)
     salt: Mapped[str]
     password: Mapped[str]
     access_token: Mapped[str] = mapped_column(unique=True, index=True)
 
     @classmethod
-    async def register_user(cls, username: str, password: str, session: AsyncSession) -> bool:
+    async def register_user(
+        cls, username: str, password: str, session: AsyncSession
+    ) -> bool:
         """
         Registers user in database.
 
@@ -43,7 +50,12 @@ class User(OrmBase):
         access_token: str = await cls.get_unique_access_token(session)
 
         session.add(
-            cls(username=username, password=password_hash, salt=salt, access_token=access_token)
+            cls(
+                username=username,
+                password=password_hash,
+                salt=salt,
+                access_token=access_token
+            )
         )
         try:
             await session.commit()
@@ -54,19 +66,22 @@ class User(OrmBase):
             return False
 
     @classmethod
-    async def get_user_by_login_and_password(cls, username: str, password: str, session: AsyncSession) -> "User":
+    async def get_user_by_login_and_password(
+        cls, username: str, password: str, session: AsyncSession
+    ) -> User:
         """
-        Fetches user object via provided login and plain password, checks if passwords match,
-        and gives back object of user.
+        Fetches user object via provided login and plain password,
+        checks if passwords match, and gives back object of user.
 
         :param username: users login.
         :param password: users plain password.
         :param session: SQLAlchemy session.
         :return: object of class User when password matched one saved in db.
-        :raise InvalidCredentials: when password in db and provided by user are mismatching.
+        :raise InvalidCredentials: when password in db
+        and provided by user are mismatching.
         :raise ValueError: if user is not registered.
         """
-        query = select(User).where(User.username == username)
+        query = select(cls).where(User.username == username)
         try:
             result: User = (await session.execute(query)).scalars().one()
 
@@ -85,7 +100,9 @@ class User(OrmBase):
             raise ValueError("No such user registered")
 
     @classmethod
-    async def get_user_by_access_token(cls, access_token: str, session: AsyncSession) -> "User":
+    async def get_user_by_access_token(
+        cls, access_token: str, session: AsyncSession
+    ) -> User:
         """
         Gets User object from db by access token.
 
@@ -95,7 +112,7 @@ class User(OrmBase):
         :raise InvalidCredentials: if there is no such access token in db.
         """
         try:
-            query = select(User).where(User.access_token == access_token)
+            query = select(cls).where(cls.access_token == access_token)
             result: User = (await session.execute(query)).scalars().one()
 
             return result

@@ -9,7 +9,9 @@ from src.models.exceptions import InvalidCredentials
 
 # post /users/login
 @inject_session
-async def handle_authentication(request: web.Request, session: AsyncSession) -> web.Response:
+async def handle_authentication(
+    request: web.Request, session: AsyncSession
+) -> web.Response:
     """
     Authenticates user by provided credentials and responds with set-cookie,
     providing access token for future API usage.
@@ -19,7 +21,7 @@ async def handle_authentication(request: web.Request, session: AsyncSession) -> 
     :return: web response with set-cookie header or error message.
     """
     try:
-        request_body: dict =await request.json(loads=orjson.loads)
+        request_body: dict = await request.json(loads=orjson.loads)
         username: str = str(request_body["username"]).strip()
         password: str = str(request_body["password"]).strip()
 
