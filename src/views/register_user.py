@@ -22,7 +22,7 @@ async def handle_registration(request: web.Request, session: AsyncSession) -> we
     """
     try:
         request_body: dict = await request.json(loads=orjson.loads)
-        username: str = request_body["username"].strip()
+        username: str = str(request_body["username"]).strip()
 
         if USERNAME_REGEX.fullmatch(username) is None:
             return web.Response(
@@ -35,7 +35,7 @@ async def handle_registration(request: web.Request, session: AsyncSession) -> we
                 )
             )
 
-        password: str = request_body["password"].strip()
+        password: str = str(request_body["password"]).strip()
 
         if USER_PASSWORD_REGEX.fullmatch(password) is None:
             return web.Response(
@@ -52,7 +52,7 @@ async def handle_registration(request: web.Request, session: AsyncSession) -> we
             username, password, session
         )
 
-    except orjson.JSONDecodeError:
+    except (orjson.JSONDecodeError, AttributeError):
         return web.Response(
             status=400,
             body=orjson.dumps(
