@@ -97,6 +97,17 @@ paths:
                 type: string
                 example: UserToken=abswhe1111...; Path=/; HttpOnly
 
+        '400':
+          description: Something is wrong with request body (invalid format)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Human-readable reason for request denial
+
         '401':
           description: User did not provide correct password for corresponding login
           content:
