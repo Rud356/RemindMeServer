@@ -234,7 +234,7 @@ paths:
                   type: string
                   minLength: 1
                   maxLength: 65
-                  description: Even title
+                  description: Event title
 
                 description:
                   type: string
@@ -246,20 +246,6 @@ paths:
                   type: string
                   example: 33FF33
                   description: HEX representation of colors
-
-                is_active:
-                  type: boolean
-                  description: Is event deleted or not
-
-                created_at:
-                  type: string
-                  format: date-time
-                  description: When event was created
-
-                last_edited_at:
-                  type: string
-                  format: date-time
-                  description: When event was last edited, so other clients can update their events to latest version without conflicts
 
                 triggered_at:
                   type: string
@@ -273,7 +259,7 @@ paths:
 
                 trigger_period:
                   type: integer
-                  description: after how many days event should be triggered again
+                  description: after how many days event should be triggered again (0 stands for not periodic events)
 
       responses:
         '200':
