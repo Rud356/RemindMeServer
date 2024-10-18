@@ -232,11 +232,13 @@ paths:
               properties:
                 title:
                   type: string
+                  minLength: 1
                   maxLength: 65
                   description: Even title
 
                 description:
                   type: string
+                  minLength: 1
                   maxLength: 240
                   description: Event description
 
@@ -465,11 +467,13 @@ paths:
               properties:
                 title:
                   type: string
+                  minLength: 1
                   maxLength: 65
                   description: Event title
 
                 description:
                   type: string
+                  minLength: 1
                   maxLength: 240
                   description: Event description
 

@@ -25,9 +25,15 @@ class Reminder(OrmBase):
         ForeignKey("user.id")
     )
     # Notification title
-    title: Mapped[str] = mapped_column(String(65))
+    title: Mapped[str] = mapped_column(
+        String(65),
+        CheckConstraint("length(title) > 0")
+    )
     # Notification description
-    description: Mapped[str] = mapped_column(String(240))
+    description: Mapped[str] = mapped_column(
+        String(240),
+        CheckConstraint("length(description) > 0")
+    )
     # Color code for reminder in app
     color_code: Mapped[int] = mapped_column(
         CheckConstraint(
@@ -53,7 +59,7 @@ class Reminder(OrmBase):
     # How many days before the event will be triggered again
     trigger_period: Mapped[int] = mapped_column(
         CheckConstraint(
-            "trigger_period > 0"
+            "trigger_period >= 0"
         )
     )
 
@@ -121,12 +127,11 @@ class Reminder(OrmBase):
             authored_by_user_id=user_id,
             title=title,
             description=description,
-            color_code=color_code,
+            color_code=cls.convert_from_hex_to_int_color(color_code),
             triggered_at=triggered_at,
             is_periodic=is_periodic,
             trigger_period=trigger_period
         )
-
         session.add(reminder)
 
         try:
