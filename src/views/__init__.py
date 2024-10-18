@@ -2,6 +2,7 @@ from aiohttp import web
 
 from .active_reminders import handle_fetching_active_reminders
 from .authenticate_user import handle_authentication
+from .create_new_reminder import handle_creating_reminder
 from .logout_from_account import handle_logout
 from .register_user import handle_registration
 from .reminder_specific_actions import (
@@ -33,6 +34,11 @@ def init_application_routes(app: web.Application) -> None:
                 "get",
                 "/reminders/",
                 handle_fetching_active_reminders
+            ),
+            web.route(
+                "post",
+                "/reminders/",
+                handle_creating_reminder
             ),
             web.route(
                 "get",

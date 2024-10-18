@@ -13,7 +13,7 @@ from .inject_session import inject_session
 
 # post /reminders/
 @inject_session
-async def handle_fetching_active_reminders(
+async def handle_creating_reminder(
     request: web.Request, session: AsyncSession
 ) -> web.Response:
     """
