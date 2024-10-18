@@ -4,9 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.DTO.reminder_DTO import ReminderDTO
 from src.models.exceptions import InvalidCredentials
-from src.models.reminder import Reminder
-from src.models.user import User
 from .inject_session import inject_session
+from ..controllers.fetch_all_reminders import fetch_all_reminders
 
 
 # get /reminders/
@@ -23,9 +22,12 @@ async def handle_fetching_active_reminders(
     """
 
     try:
-        user: User = await User.get_user_by_access_token(
-            request.cookies["UserToken"], session
+        reminders: list[ReminderDTO] = await fetch_all_reminders(
+            request.cookies["UserToken"],
+            session
         )
+
+        return web.Response(body=orjson.dumps(reminders))
 
     except (InvalidCredentials, KeyError):
         return web.Response(
@@ -33,12 +35,3 @@ async def handle_fetching_active_reminders(
             reason="Client is not authorized"
         )
 
-    reminders: tuple[Reminder, ...] = await Reminder.get_active_reminders_of_user(
-        user.id, session
-    )
-
-    return web.Response(
-        body=orjson.dumps(
-            [ReminderDTO.from_reminder(reminder) for reminder in reminders]
-        )
-    )
