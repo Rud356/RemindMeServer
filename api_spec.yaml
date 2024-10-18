@@ -372,6 +372,9 @@ paths:
                     type: integer
                     description: after how many days event should be triggered again
 
+        '400':
+          description: Provided parameter in request is invalid
+
         '401':
           description: User is not logged into account
 
@@ -424,6 +427,9 @@ paths:
                   has_been_deleted:
                     type: boolean
                     default: true
+
+        '400':
+          description: Provided parameter in request is invalid
 
         '404':
           description: Event has not been found in active list
