@@ -200,6 +200,11 @@ paths:
                       format: date-time
                       description: When will the event be triggered first time as notification
 
+                    is_active:
+                      type: boolean
+                      description: Is this reminder active
+                      default: true
+
                     is_periodic:
                       type: boolean
                       description: Describes is event periodic or not
