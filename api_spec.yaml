@@ -130,6 +130,25 @@ paths:
                     description: Human-readable description of why login attempt was unsuccessful
                     type: string
 
+  /users/logout:
+    post:
+      summary: Removes user token from cookies to log out of account
+      security:
+        - cookieAuth: [ ]
+
+      responses:
+        '200':
+          description: Cookie removed
+          headers:
+            Set-Cookie:
+              description: The AccessToken cookie will be removed
+              schema:
+                type: string
+                example: UserToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+
+        '401':
+          description: User is not logged into account
+
   /reminders/:
     get:
       summary: Fetches all users events that are related to user
