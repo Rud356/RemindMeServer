@@ -3,9 +3,9 @@ from aiohttp import web
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.DTO.reminder_DTO import ReminderDTO
+from src.controllers.fetch_all_reminders import fetch_all_reminders
 from src.models.exceptions import InvalidCredentials
 from .inject_session import inject_session
-from ..controllers.fetch_all_reminders import fetch_all_reminders
 
 
 # get /reminders/
@@ -34,4 +34,3 @@ async def handle_fetching_active_reminders(
             status=401,
             reason="Client is not authorized"
         )
-
