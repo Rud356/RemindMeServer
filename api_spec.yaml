@@ -466,7 +466,7 @@ paths:
                 title:
                   type: string
                   maxLength: 65
-                  description: Even title
+                  description: Event title
 
                 description:
                   type: string
