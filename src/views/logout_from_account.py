@@ -1,6 +1,7 @@
 from aiohttp import web
 
 
+# post /users/logout
 async def handle_logout(request: web.Request) -> web.Response:
     """
     Removes cookie on client side with authentication token if it's present.
