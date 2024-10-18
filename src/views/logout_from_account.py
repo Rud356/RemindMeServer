@@ -16,4 +16,4 @@ async def handle_logout(request: web.Request) -> web.Response:
         return response
 
     else:
-        return web.Response(body="Not authorized".encode("utf8"), status=401)
+        return web.Response(reason="Not authorized", status=401)
