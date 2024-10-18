@@ -11,7 +11,9 @@ async def fetch_all_reminders(
         user_token, session
     )
 
-    reminders: tuple[Reminder, ...] = await Reminder.get_active_reminders_of_user(
+    reminders: tuple[
+        Reminder, ...
+    ] = await Reminder.get_active_reminders_of_user(
         user.id, session
     )
     return [ReminderDTO.from_reminder(reminder) for reminder in reminders]
