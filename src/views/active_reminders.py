@@ -2,13 +2,14 @@ import orjson
 from aiohttp import web
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .inject_session import inject_session
+from src.DTO.reminder_DTO import ReminderDTO
 from src.models.exceptions import InvalidCredentials
-from src.models.user import User
 from src.models.reminder import Reminder
-from ..DTO.reminder_DTO import ReminderDTO
+from src.models.user import User
+from .inject_session import inject_session
 
 
+# get /reminders/
 @inject_session
 async def handle_fetching_active_reminders(
     request: web.Request, session: AsyncSession
