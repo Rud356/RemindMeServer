@@ -31,8 +31,7 @@ class Reminder(OrmBase):
     )
     # Notification description
     description: Mapped[str] = mapped_column(
-        String(240),
-        CheckConstraint("length(description) > 0")
+        String(240)
     )
     # Color code for reminder in app
     color_code: Mapped[int] = mapped_column(
