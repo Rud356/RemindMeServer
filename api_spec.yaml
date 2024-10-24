@@ -241,7 +241,6 @@ paths:
 
                 description:
                   type: string
-                  minLength: 1
                   maxLength: 240
                   description: Event description
 
@@ -266,7 +265,7 @@ paths:
 
       responses:
         '200':
-          description: Created event
+          description: Event created
 
           content:
             application/json:
@@ -417,7 +416,6 @@ paths:
 
                 description:
                   type: string
-                  minLength: 1
                   maxLength: 240
                   description: Event description
 
