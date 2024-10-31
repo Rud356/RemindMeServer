@@ -1,0 +1,465 @@
+openapi: "3.0.2"
+info:
+  title: RemindMe API
+  version: "1.0"
+servers:
+  - url: http://localhost:9000/
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: UserToken
+
+  schemas:
+    Reminder:
+      properties:
+        properties:
+          id:
+            type: integer
+            description: event ID
+
+          title:
+            type: string
+            maxLength: 65
+            description: Even title
+
+          description:
+            type: string
+            maxLength: 240
+            description: Event description
+
+          color_code:
+            type: string
+            example: 33FF33
+            description: HEX representation of colors
+
+          created_at:
+            type: string
+            format: date-time
+            description: When event was created
+
+          last_edited_at:
+            type: string
+            format: date-time
+            description: When event was last edited, so other clients can update their events to latest version without conflicts
+
+          triggered_at:
+            type: string
+            format: date-time
+            description: When will the event be triggered first time as notification
+
+          is_active:
+            type: boolean
+            description: Is this reminder active
+            default: true
+
+          is_periodic:
+            type: boolean
+            description: Describes is event periodic or not
+            default: true
+
+          trigger_period:
+            type: integer
+            description: after how many days event should be triggered again
+
+paths:
+  /users/register:
+    post:
+      summary: Registers users account with provided credential
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  description: Desired login for new user account
+                  type: string
+                  pattern: "^[A-z0-9_]{8,}"
+                password:
+                  description: Desired password for new user account
+                  type: string
+                  pattern: "^[A-z0-9_+\-=]{8,}"
+      responses:
+        '200':
+          description: Indication of was user registered or not using provided credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  registered:
+                    type: boolean
+                    default: true
+
+        '400':
+          description: Something is wrong with request body (either login or password not matching requirements)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Human-readable reason for registration denial
+
+        '409':
+          description: Already have user registered with provided login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Human-readable reason for registration denial
+
+                  registered:
+                    type: boolean
+                    default: false
+                    description: Indicates that registration failed in this scenario
+
+  /users/login:
+    post:
+      summary: Provides user with access token if login and password that been provided are registered. Token must be used to access all other endpoints.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  description: User login
+                  type: string
+                password:
+                  description: Users password associated with provided login
+                  type: string
+
+      responses:
+        '200':
+          description: User successfully logged in
+          headers:
+            Set-Cookie:
+              schema:
+                description: Authorization cookie being set for other paths
+                type: string
+                example: UserToken=abswhe1111...; Path=/; HttpOnly
+
+        '400':
+          description: Something is wrong with request body (invalid format)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Human-readable reason for request denial
+
+        '401':
+          description: User did not provide correct password for corresponding login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    description: Human-readable description of why login attempt was unsuccessful
+                    type: string
+
+        '404':
+          description: User not found with such login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    description: Human-readable description of why login attempt was unsuccessful
+                    type: string
+
+  /users/logout:
+    post:
+      summary: Removes user token from cookies to log out of account
+      security:
+        - cookieAuth: [ ]
+
+      responses:
+        '200':
+          description: Cookie removed
+          headers:
+            Set-Cookie:
+              description: The AccessToken cookie will be removed
+              schema:
+                type: string
+                example: UserToken=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT
+
+        '401':
+          description: User is not logged into account
+
+  /reminders/:
+    get:
+      summary: Fetches all users events that are related to user
+      security:
+        - cookieAuth: [ ]
+
+      responses:
+        '200':
+          description: All events fetched successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Reminder"
+
+        '401':
+          description: User is not logged into account
+
+
+    post:
+      summary: Creates new event
+      security:
+        - cookieAuth: [ ]
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 65
+                  description: Event title
+
+                description:
+                  type: string
+                  maxLength: 240
+                  description: Event description
+
+                color_code:
+                  type: string
+                  example: 33FF33
+                  description: HEX representation of colors
+
+                triggered_at:
+                  type: string
+                  format: date-time
+                  description: When will the event be triggered first time as notification
+
+                is_periodic:
+                  type: boolean
+                  description: Describes is event periodic or not
+                  default: true
+
+                trigger_period:
+                  type: integer
+                  description: after how many days event should be triggered again (0 stands for not periodic events)
+
+      responses:
+        '200':
+          description: Event created
+
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_created:
+                    type: boolean
+                    default: true
+
+                  event_id:
+                    type: integer
+                    description: ID of new event
+
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Human-readable explanation of invalid request body
+
+        '401':
+          description: User is not logged into account
+
+  /reminders/{reminderId}:
+    get:
+      summary: Fetches specific event by provided ID
+      security:
+        - cookieAuth: [ ]
+
+      parameters:
+        - in: path
+          name: reminderId
+          schema:
+            type: integer
+          required: true
+          description: ID of specific event
+
+      responses:
+        '200':
+          description: Event fetched by it's ID
+
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reminder"
+
+        '400':
+          description: Provided parameter in request is invalid
+
+        '401':
+          description: User is not logged into account
+
+        '404':
+          description: Event with specified ID was not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Human-readable reason for not finding event
+
+    delete:
+      summary: Removes event from being active
+      security:
+        - cookieAuth: [ ]
+
+      parameters:
+        - in: path
+          name: reminderId
+          schema:
+            type: integer
+          required: true
+          description: ID of specific event
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_id:
+                  type: integer
+                  description: ID of event to be deleted
+
+      responses:
+        '200':
+          description: Event has been successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  deleted_event_id:
+                    type: integer
+
+                  has_been_deactivated:
+                    type: boolean
+                    default: true
+
+        '400':
+          description: Provided parameter in request is invalid
+
+        '404':
+          description: Event has not been found in active list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Human-readable explanation of why event was not deleted
+
+    patch:
+      summary: Updates specified event fields with new data
+      security:
+        - cookieAuth: [ ]
+
+      parameters:
+        - in: path
+          name: reminderId
+          schema:
+            type: integer
+          required: true
+          description: ID of specific event
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              minProperties: 1
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 65
+                  description: Event title
+
+                description:
+                  type: string
+                  maxLength: 240
+                  description: Event description
+
+                color_code:
+                  type: string
+                  example: 33FF33
+                  description: HEX representation of colors
+
+                triggered_at:
+                  type: string
+                  format: date-time
+                  description: When will the event be triggered first time as notification
+
+                is_periodic:
+                  type: boolean
+                  description: Describes is event periodic or not
+                  default: true
+
+                trigger_period:
+                  type: integer
+                  description: after how many days event should be triggered again
+
+      responses:
+        '200':
+          description: Successfully updated event
+
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                  description: Names of updates fields on specified event
+
+        '400':
+          description: Invalid request body
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reason:
+                    type: string
+                    description: Human-readable explanation of invalid request body
+
+        '401':
+          description: User is not logged into account
