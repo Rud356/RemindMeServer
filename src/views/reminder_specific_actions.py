@@ -169,7 +169,7 @@ async def handle_updating_specific_reminder(
             body=orjson.dumps(updated_fields)
         )
 
-    except (DataError, StatementError, ProgrammingError, ValueError):
+    except (DataError, StatementError, ProgrammingError, AttributeError, TypeError, ValueError):
         return web.Response(
             status=400,
             reason="Invalid request body or URL parameter"
@@ -181,11 +181,13 @@ async def handle_updating_specific_reminder(
             reason="Client is not authorized"
         )
 
-    except (AttributeError, TypeError, KeyError, ObjectNotFound):
+    except (KeyError, ObjectNotFound) as e:
         return web.Response(
             status=404,
-            body={
-                "reason":
-                    "Provided ID in URL parameter is not found for that user"
-            }
+            body=orjson.dumps(
+                {
+                    "reason":
+                        "Provided ID in URL parameter is not found for that user"
+                }
+            )
         )

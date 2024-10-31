@@ -9,13 +9,13 @@ from src.models.user import User
 
 
 async def update_specific_reminder(
-    user_token: str, reminder_id: int, session: AsyncSession, /,
+    user_token: str, reminder_id: int, session: AsyncSession, *,
     title: str | None = None,
     description: str | None = None,
     color_code: str | None = None,
     triggered_at: datetime | None = None,
-    trigger_period: int | None = None,
-    *_
+    is_periodic: bool = None,
+    trigger_period: int | None = None
 ) -> list[str]:
     """
     Updates fields of specific event that is created by user,
@@ -28,6 +28,7 @@ async def update_specific_reminder(
     :param description: new description.
     :param color_code: HEX color code in string format.
     :param triggered_at: when will event be triggered first time.
+    :param is_periodic: will event be triggered again in some period.
     :param trigger_period: how many days should pass before
     event is triggered again.
     :param _: stores all invalid keys.
@@ -69,6 +70,9 @@ async def update_specific_reminder(
 
     if trigger_period is not None:
         fields["trigger_period"] = trigger_period
+
+    if is_periodic is not None:
+        fields["is_periodic"] = is_periodic
 
     if len(fields) == 0:
         raise ValueError("Fields not updated")

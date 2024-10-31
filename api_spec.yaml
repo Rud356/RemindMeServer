@@ -369,7 +369,7 @@ paths:
                   deleted_event_id:
                     type: integer
 
-                  has_been_deleted:
+                  has_been_deactivated:
                     type: boolean
                     default: true
 

@@ -41,6 +41,15 @@ def initialize_session_maker(
     )
 
 
+async def reinitialize_db(engine: AsyncEngine) -> None:
+    user_module = __import__("src.models.user")
+    reminder_module = __import__("src.models.reminder")
+
+    async with engine.begin() as conn:
+        await conn.run_sync(OrmBase.metadata.drop_all)
+        await conn.run_sync(OrmBase.metadata.create_all)
+
+
 class OrmBase(AsyncAttrs, DeclarativeBase):
     """
     Base class for ORM models.

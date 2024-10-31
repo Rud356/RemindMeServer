@@ -36,7 +36,7 @@ class Reminder(OrmBase):
     # Color code for reminder in app
     color_code: Mapped[int] = mapped_column(
         CheckConstraint(
-            "color_code BETWEEN (0, 256*256*256 - 1)"
+            "color_code BETWEEN 0 AND (256*256*256 - 1)"
         )
     )
     # Is reminder active and sends notifications
@@ -121,7 +121,6 @@ class Reminder(OrmBase):
         color_code: str, triggered_at: datetime.datetime,
         is_periodic: bool, trigger_period: int, session: AsyncSession
     ) -> Reminder | None:
-
         reminder = cls(
             authored_by_user_id=user_id,
             title=title,
@@ -131,15 +130,17 @@ class Reminder(OrmBase):
             is_periodic=is_periodic,
             trigger_period=trigger_period
         )
-        session.add(reminder)
 
-        try:
-            await session.commit()
-            return reminder
+        async with session.begin_nested() as tr:
+            session.add(reminder)
+            try:
+                await tr.commit()
 
-        except IntegrityError:
-            await session.rollback()
-            return None
+            except IntegrityError as e:
+                await tr.rollback()
+                return None
+
+        return reminder
 
     @classmethod
     async def get_reminder_by_id(
