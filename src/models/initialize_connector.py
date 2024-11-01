@@ -42,8 +42,12 @@ def initialize_session_maker(
 
 
 async def reinitialize_db(engine: AsyncEngine) -> None:
-    user_module = __import__("src.models.user")
-    reminder_module = __import__("src.models.reminder")
+    user_module = __import__(  # noqa: F841
+        "src.models.user"
+    )
+    reminder_module = __import__(  # noqa: F841
+        "src.models.reminder"
+    )
 
     async with engine.begin() as conn:
         await conn.run_sync(OrmBase.metadata.drop_all)

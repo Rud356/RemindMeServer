@@ -45,4 +45,7 @@ async def deactivate_specific_reminder(
         # Unknown reason, need to check logs
         raise web.HTTPInternalServerError()
 
-    return {"deleted_event_id": event_id, "has_been_deactivated": is_deactivated}
+    return {
+        "deleted_event_id": event_id,
+        "has_been_deactivated": is_deactivated
+    }

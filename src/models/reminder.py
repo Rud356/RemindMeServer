@@ -138,7 +138,7 @@ class Reminder(OrmBase):
             try:
                 await tr.commit()
 
-            except IntegrityError as e:
+            except IntegrityError:
                 await tr.rollback()
                 return None
 

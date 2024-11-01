@@ -3,7 +3,9 @@ import tomllib
 
 from src import main
 from src.models import initialize_connector
-from src.models.initialize_connector import create_engine, initialize_session_maker
+from src.models.initialize_connector import (
+    create_engine, initialize_session_maker
+)
 
 with open("config.toml", "rb") as cfg:
     config = tomllib.load(cfg)["RemindMe"]
