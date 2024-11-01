@@ -97,6 +97,7 @@ class Reminder(OrmBase):
                 setattr(self, key, fields[key])
                 modified_fields.append(key)
 
+            self.last_edited_at = datetime.datetime.now(datetime.UTC)
             # Try commiting changes to database to check if values are ok
             await session.commit()
             return modified_fields
@@ -108,6 +109,7 @@ class Reminder(OrmBase):
     async def deactivate_reminder(self, session: AsyncSession) -> bool:
         try:
             self.is_active: bool = False
+            self.last_edited_at = datetime.datetime.now(datetime.UTC)
             await session.commit()
             return True
 
