@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -10,12 +10,12 @@ from src.models.user import User
 
 async def update_specific_reminder(
     user_token: str, reminder_id: int, session: AsyncSession, *,
-    title: str | None = None,
-    description: str | None = None,
-    color_code: str | None = None,
-    triggered_at: datetime | None = None,
-    is_periodic: bool = None,
-    trigger_period: int | None = None
+    title: Optional[str] = None,
+    description: Optional[str] = None,
+    color_code: Optional[str] = None,
+    triggered_at: Optional[datetime] = None,
+    is_periodic: Optional[bool] = None,
+    trigger_period: Optional[int] = None
 ) -> list[str]:
     """
     Updates fields of specific event that is created by user,
