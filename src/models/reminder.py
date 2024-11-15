@@ -54,7 +54,9 @@ class Reminder(OrmBase):
         server_default=func.now()
     )
     # When will event be first triggered at
-    triggered_at: Mapped[datetime.datetime]
+    triggered_at: Mapped[datetime.datetime] = mapped_column(
+        DateTime(timezone=True)
+    )
     # How many days before the event will be triggered again
     trigger_period: Mapped[int] = mapped_column(
         CheckConstraint(

@@ -54,7 +54,7 @@ async def handle_creating_reminder(
             body=orjson.dumps(result)
         )
 
-    except (KeyError, TypeError, ValueError, AttributeError):
+    except (KeyError, TypeError, ValueError, AttributeError) as e:
         return web.Response(
             status=400,
             reason="Invalid request body"
