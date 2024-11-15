@@ -1,5 +1,5 @@
 [RemindMe]
 host = "127.0.0.1"
-port = 8900
+port = 9000
 debug = true
 engine_connection = "postgresql+asyncpg://RemindMeUser:example@localhost/remind_me"
