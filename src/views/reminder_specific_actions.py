@@ -116,10 +116,10 @@ async def handle_deactivating_specific_reminder(
     except (AttributeError, ObjectNotFound):
         return web.Response(
             status=404,
-            body={
+            body=orjson.dumps({
                 "reason":
                     "Provided ID in URL parameter is not found for that user"
-            }
+            })
         )
 
 
