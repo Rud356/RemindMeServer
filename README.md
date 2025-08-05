@@ -1,14 +1,51 @@
 # RemindMeServer
-Server for synchronizing reminders on phone
+Серверная часть приложения [RemindMeApp](https://github.com/Rud356/RemindMeApp)
 
-## Environment
-- Python 3.11
-- Postgresql
+## Установка RemindMeServer
 
-## How to install
-1. Download repository and change directory to new folder with its name
-2. Setup PostgreSQL
-3. Copy config file from example `config.toml.example` and rename it to config.toml
-4. Put format connection string to database with your credentials and other parameters
-5. Run server using `python -m src`
-6. Check if application is working on http://localhost:9000
+### Аппаратные требования
+
+- 1 ядро с частотой больше 1 ГГц для компьютера с сервером RemindMeServer  
+- минимум 600 Мб свободного места  
+- доступ в Интернет  
+
+### Предварительные требования к программному обеспечению
+
+- Операционная система с поддержкой установки Python версии 3.11 или выше (Linux, Windows, MacOS)  
+- Python 3.11, пакетный менеджер PIP и пакет `virtualenv` для данной версии Python  
+- Установленный сервер СУБД PostgreSQL версии 11.0 или выше  
+- Доступ в интернет и установленный Git  
+
+### Предварительные требования к конфигурации
+
+- Созданная база данных внутри сервера PostgreSQL и пользователь с логином и паролем  
+- Настроенный доступ к PostgreSQL на устройстве, с которого будет проводиться установка сервера RemindMeServer  
+
+### Шаги для первичной установки
+
+1. Загрузить репозиторий с помощью Git:  
+   `git clone https://github.com/Rud356/RemindMeServer.git`
+
+2. Перейти в корневую папку загруженного репозитория:  
+   `cd RemindMeServer`
+
+3. Создать виртуальное окружение:  
+   `python -m venv env`
+
+4. Активировать виртуальное окружение для вашей ОС  
+   [Инструкция по активации](https://virtualenv.pypa.io/en/latest/user_guide.html)
+
+5. Установить зависимости:  
+   `pip install -r requirements.txt`
+
+6. Скопировать файл `config.toml.example` под именем `config.toml` и настроить параметры:
+   - `host`: адрес, с которого будут приниматься HTTP-запросы  
+   - `port`: порт, используемый сервером (по умолчанию `9000`)  
+   - `debug`: пересоздание базы данных при запуске (`true` — только для первого запуска, затем `false`)  
+   - `engine_connection`: строка подключения к базе данных в формате:  
+     `postgresql+asyncpg://{Пользователь}:{Пароль}@{АдресСервера}/{БазаДанных}`
+
+7. Запустить сервер для создания базы данных и проверки работоспособности:  
+   `python -m ./src`
+
+8. Изменить параметр `debug` в `config.toml` на `false` и запустить сервер повторно для постоянной работы.
